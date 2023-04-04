@@ -19,7 +19,7 @@ This project aims to provide a simple and efficient way to integrate OpenAI's Ch
 1. Clone the repository:
 
     ```bash
-    git clone <https://github.com/your-username/openai-mqtt-nodejs.git>
+    git clone https://github.com/your-username/openai-mqtt-nodejs.git
     ```
 
 2. Go to the project directory:
