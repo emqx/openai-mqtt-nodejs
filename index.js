@@ -3,6 +3,8 @@ const mqtt = require("mqtt");
 
 // Replace with your OpenAI API key
 const OPENAI_API_KEY = "Your-OpenAI-API-Key";
+let messages = []; // Store conversation history
+const maxMessageCount = 10;
 
 const http = axios.create({
   baseURL: "https://api.openai.com/v1/chat",
@@ -26,7 +28,7 @@ const OPTIONS = {
 };
 
 const connectUrl = `mqtt://${host}:${port}`;
-const chatGPTReqTopic = "chatgpt/request";
+const chatGPTReqTopic = "chatgpt/#";
 
 const client = mqtt.connect(connectUrl, OPTIONS);
 
@@ -47,21 +49,28 @@ client.on("error", (error) => {
 
 client.on("message", (topic, payload) => {
   console.log("Received Message:", topic, payload.toString());
-  genText(payload.toString());
+  messages.push({ role: "user", content: payload.toString() });
+  if (messages.length > maxMessageCount) {
+    messages.shift(); // Remove the oldest message
+  }
+  genText();
 });
 
-const genText = async (prompt) => {
-  console.log(prompt);
+const genText = async () => {
   try {
     const { data } = await http.post("/completions", {
       model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: prompt }],
+      messages: messages,
       temperature: 0.7,
     });
 
     if (data.choices && data.choices.length > 0) {
       const { content } = data.choices[0].message;
       console.log(content);
+      messages.push({ role: "assistant", content: content });
+      if (messages.length > maxMessageCount) {
+        messages.shift(); // Remove the oldest message
+      }
       client.publish("chatgpt/demo", content, { qos: 0, retain: false }, (error) => {
         if (error) {
           console.error(error);
