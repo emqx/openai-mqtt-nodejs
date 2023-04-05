@@ -30,21 +30,21 @@ const OPTIONS = {
 };
 
 const connectUrl = `mqtt://${host}:${port}`;
-const chatGPTReqTopic = "chatgpt/#";
+const chatGPTReqTopic = "chatgpt/request/+";
 const client = mqtt.connect(connectUrl, OPTIONS);
 const chatGPTReqTopicPrefix = "chatgpt/request/";
 
 client.on("connect", () => {
   console.log(`${host}, Connected`);
   client.subscribe(chatGPTReqTopic, () => {
-    console.log(`${host}, Subscribed to topics with prefix 'chatgpt/'`);
+    console.log(`${host}, Subscribed to topics with prefix 'chatgpt/request/'`);
   });
 });
 
 client.on("message", (topic, payload) => {
   console.log("Received Message:", topic, payload.toString());
   // Check if the topic is not the one you're publishing to
-  if (topic !== "chatgpt/demo") {
+  if (topic.startsWith(chatGPTReqTopicPrefix)) {
     const userId = topic.replace(chatGPTReqTopicPrefix, "");
     messages[userId] = messages[userId] || [];
     messages[userId].push({ role: "user", content: payload.toString() });
