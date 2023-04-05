@@ -56,7 +56,7 @@ This project aims to provide a simple and efficient way to integrate OpenAI's Ch
     npm run start
     ```
 
-2. The application will automatically connect to the MQTT broker and subscribe to the `chatgpt/#` topic.
+2. The application will automatically connect to the MQTT broker and subscribe to the `chatgpt/request/+` topic.
 
 3. To interact with the ChatGPT, publish a message to a user-specific topic like `chatgpt/request/user1`. The application will receive the message, send it to the OpenAI API, and publish the response to a corresponding topic like `chatgpt/response/user1`.
 
