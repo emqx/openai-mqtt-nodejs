@@ -30,7 +30,7 @@ const OPTIONS = {
 };
 
 const connectUrl = `mqtt://${host}:${port}`;
-const chatGPTReqTopic = "chatgpt/demo";
+const chatGPTReqTopic = "chatgpt/#";
 const client = mqtt.connect(connectUrl, OPTIONS);
 const chatGPTReqTopicPrefix = "chatgpt/request/";
 
@@ -43,13 +43,16 @@ client.on("connect", () => {
 
 client.on("message", (topic, payload) => {
   console.log("Received Message:", topic, payload.toString());
-  const userId = topic.replace(chatGPTReqTopicPrefix, "");
-  messages[userId] = messages[userId] || [];
-  messages[userId].push({ role: "user", content: payload.toString() });
-  if (messages[userId].length > maxMessageCount) {
-    messages[userId].shift(); // Remove the oldest message
+  // Check if the topic is not the one you're publishing to
+  if (topic !== "chatgpt/demo") {
+    const userId = topic.replace(chatGPTReqTopicPrefix, "");
+    messages[userId] = messages[userId] || [];
+    messages[userId].push({ role: "user", content: payload.toString() });
+    if (messages[userId].length > maxMessageCount) {
+      messages[userId].shift(); // Remove the oldest message
+    }
+    genText(userId);
   }
-  genText(userId);
 });
 
 const genText = async (userId) => {

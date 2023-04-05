@@ -34,7 +34,11 @@ This project aims to provide a simple and efficient way to integrate OpenAI's Ch
     npm install
     ```
 
-4. Update the OPENAI_API_KEY constant in index.js with your OpenAI API key.
+4. Create a `.env` file in the project root directory with the following content:
+
+    ```bash
+    OPENAI_API_KEY=your_openai_api_key
+    ```
 
 5. Update the OPTIONS object in index.js with your MQTT broker's connection details.
 
@@ -52,9 +56,11 @@ This project aims to provide a simple and efficient way to integrate OpenAI's Ch
     npm run start
     ```
 
-2. The application will automatically connect to the MQTT broker and subscribe to the chatgpt/request topic.
+2. The application will automatically connect to the MQTT broker and subscribe to the `chatgpt/#` topic.
 
-3. To interact with the ChatGPT, publish a message to the chatgpt/request topic. The application will receive the message, send it to the OpenAI API, and publish the response to the chatgpt/demo topic.
+3. To interact with the ChatGPT, publish a message to a user-specific topic like `chatgpt/request/user1`. The application will receive the message, send it to the OpenAI API, and publish the response to a corresponding topic like `chatgpt/response/user1`.
+
+Each user should have their unique topic for requests and responses to ensure user isolation. Replace `user1` with an appropriate identifier for each user.
 
 ## Contributing
 
