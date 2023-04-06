@@ -2,6 +2,8 @@
 
 Node.js project that combines OpenAI's API with MQTT for real-time AI-driven interactions in IoT ecosystems.
 
+![image](./overview.png)
+
 ## Description
 
 This project aims to provide a simple and efficient way to integrate OpenAI's ChatGPT with MQTT protocol, enabling real-time AI-driven interactions within IoT ecosystems. By leveraging the power of OpenAI's language models, users can interact with their connected devices using natural language. This project is suitable for a wide range of IoT applications, such as smart homes, industrial automation, and other IoT domains.
